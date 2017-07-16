@@ -90,15 +90,19 @@ public class ImportDCM extends JFrame implements PlugIn{
 		}else{
 			this.ip = jpreferPerso.get("ip", "http://localhost");
 			this.port = jpreferPerso.get("port", "8042");
-			if(jpreferPerso.get("username", null) != null && jpreferPerso.get("username", null) != null){
+			if(jpreferPerso.get("username", null) != null && jpreferPerso.get("password", null) != null){
 				authentication = Base64.getEncoder().encodeToString((jpreferPerso.get("username", null) + ":" + jpreferPerso.get("password", null)).getBytes());
 			}
+			System.out.println("Param perso : ip " +this.ip);
+			System.out.println("Param perso : port " +this.port);
+			System.out.println("Param perso : username " +jpreferPerso.get("username", null));
+			System.out.println("Param perso : username " +jpreferPerso.get("username", null));
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////// END CONNECTION SETUP ////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		
 		this.setTitle("Import DICOM files");
 		JPanel mainPanel = new JPanel(new GridBagLayout());
 		JLabel labelPath = new JLabel("DICOM files path");
