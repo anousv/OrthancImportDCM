@@ -74,6 +74,7 @@ public class ImportDCM extends JFrame implements PlugIn{
 				String pathBrut = jprefer.get("db path" + curDb, "none") + "/";
 				int index = ordinalIndexOf(pathBrut, "/", 3);
 				this.fullAddress = pathBrut.substring(0, index);
+				System.out.println("adresse : " + fullAddress);
 			}else{
 				String address = jprefer.get("ODBC" + curDb, "localhost");
 				String pattern1 = "@";
@@ -83,10 +84,14 @@ public class ImportDCM extends JFrame implements PlugIn{
 				while(m.find()){
 					this.ip = "http://" + m.group(1);
 				}
+				System.out.println("ip : " + this.ip);
 			}
 			if(jprefer.get("db user" + curDb, null) != null && jprefer.get("db pass" + curDb, null) != null){
 				authentication = Base64.getEncoder().encodeToString((jprefer.get("db user" + curDb, null) + ":" + jprefer.get("db pass" + curDb, null)).getBytes());
 			}
+			System.out.println("name : " + jprefer.get("db user" + curDb, null));
+			System.out.println("password : " + jprefer.get("db pass" + curDb, null));
+			System.out.println("authentication : " + authentication);
 		}else{
 			this.ip = jpreferPerso.get("ip", "http://localhost");
 			this.port = jpreferPerso.get("port", "8042");
@@ -96,7 +101,8 @@ public class ImportDCM extends JFrame implements PlugIn{
 			System.out.println("Param perso : ip " +this.ip);
 			System.out.println("Param perso : port " +this.port);
 			System.out.println("Param perso : username " +jpreferPerso.get("username", null));
-			System.out.println("Param perso : username " +jpreferPerso.get("username", null));
+			System.out.println("Param perso : password " +jpreferPerso.get("password", null));
+			System.out.println("authentication : " + authentication);
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,8 +208,7 @@ public class ImportDCM extends JFrame implements PlugIn{
 					if(authentication != null){
 						conn.setRequestProperty("Authorization", "Basic " + authentication);
 					}
-
-					conn = (HttpURLConnection) url2.openConnection();
+					
 					conn.setDoInput(true);
 					conn.setDoOutput(true);
 					conn.setRequestMethod("POST");
@@ -213,13 +218,13 @@ public class ImportDCM extends JFrame implements PlugIn{
 					OutputStream os = conn.getOutputStream();
 					os.write((Files.readAllBytes(file)));
 
-					conn.disconnect();
 					if(conn.getResponseCode() == 200){
 						System.out.println("=> Success \n");
 						successCount++;
 					}else{
 						System.out.println("=> Failure (Is it a DICOM file ? is there a password ?)\n");
 					}
+					conn.disconnect();
 					totalFiles++;
 					state.setText(successCount + "/" + totalFiles + " files were imported. (Fiji>Window>Console)");
 					System.out.println(successCount + "/" + totalFiles + " files were imported.");
